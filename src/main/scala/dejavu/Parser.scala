@@ -107,9 +107,10 @@ class Parser extends JavaTokenParsers {
     }
 
   def ltl3: Parser[LTL] =
-    ltlLeaf ~ "S" ~ ltTime ~ ltlLeaf ^^ {
-      case ltl1 ~ _ ~ time ~ ltl2 => ExistsTime(SinceTimeLE(ltl1, time, ltl2))
-    } |
+    ltlLeaf |
+      ltlLeaf ~ "S" ~ ltTime ~ ltlLeaf ^^ {
+        case ltl1 ~ _ ~ time ~ ltl2 => ExistsTime(SinceTimeLE(ltl1, time, ltl2))
+      } |
       ltlLeaf ~ "S" ~ gtTime ~ ltlLeaf ^^ {
         case ltl1 ~ _ ~ time ~ ltl2 => ExistsTimeGT(SinceTimeGT(ltl1, time, ltl2), time)
       } |
@@ -118,8 +119,7 @@ class Parser extends JavaTokenParsers {
       } |
       ltlLeaf ~ "S" ~ ltlLeaf ^^ {
         case ltl1 ~ _ ~ ltl2 => Since(ltl1, ltl2)
-      } |
-      ltlLeaf
+      }
 
   def ltTime: Parser[Int] =
     "[<=" ~ wholeNumber ~ "]" ^^ {
